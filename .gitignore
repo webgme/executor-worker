@@ -35,3 +35,16 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+
+# Worker specifics
+credits.html
+ffmpegsumo.dll
+icudt.dll
+libEGL.dll
+libGLESv2.dll
+nw.exe
+nw.pak
+nw_boxed.exe
+config.json
+
