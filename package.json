@@ -4,7 +4,8 @@
   "description": "Workers for connecting to webgme executor framework",
   "main": "node_worker.js",
   "scripts": {
-    "test": "tbe",
+    "test": "TBE",
+    "start": "node node_worker.js",
     "build": "node ./node_modules/requirejs/bin/r.js -o rjs_build_node_worker.js"
   },
   "repository": {
