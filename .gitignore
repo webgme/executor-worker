@@ -49,4 +49,9 @@ nw.exe
 nw.pak
 nw_boxed.exe
 config.json
+executor-temp
+
+# Webgme specifics
+test/blob-local-storage
+
 

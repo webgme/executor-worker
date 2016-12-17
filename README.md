@@ -1,3 +1,11 @@
+## Executor Worker
+```npm install```
+
+```npm run build```
+
+```npm start```
+
+
 Executing Simulation Jobs on the WebGME Server - Executor Setup
 
 While the ability provided by WebGME to edit and easily share models is extremely useful in collaborative design, another crucial part of the design process is evaluating alternative designs, sometimes using simulations.
