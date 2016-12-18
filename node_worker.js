@@ -30,13 +30,12 @@ var nodeRequire = require,
 if (typeof define !== 'undefined') {
 
     define('node_worker', [
-        'common/eventDispatcher',
         'blob/BlobClient',
         'src/ExecutorWorker',
         'executor/JobInfo',
         'src/ExecutorWorkerController',
         'url'
-    ], function (eventDispatcher, BlobClient, ExecutorWorker, JobInfo, ExecutorWorkerController, url) {
+    ], function (BlobClient, ExecutorWorker, JobInfo, ExecutorWorkerController, url) {
         'use strict';
 
         return function (webGMEUrl, tempPath, parameters, availableProcessesContainer) {
