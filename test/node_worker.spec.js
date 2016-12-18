@@ -53,17 +53,9 @@ describe('NodeWorker', function () {
                         },
                         ssl: {
                             key: fs.readFileSync(path.join(__dirname,
-                                '..',
-                                '..',
-                                '..',
-                                '..',
                                 'certificates',
                                 'sample-key.pem'), 'utf8'),
                             cert: fs.readFileSync(path.join(__dirname,
-                                '..',
-                                '..',
-                                '..',
-                                '..',
                                 'certificates',
                                 'sample-cert.pem'), 'utf8')
                         }
