@@ -106,14 +106,14 @@ describe('NodeWorker', function () {
                 var deferred = Q.defer(),
                     stderr = '',
                     stdout = '',
-                    args = ['node_worker.js', '../../../../../test-tmp/worker_config.json',
-                        '../../../../../test-tmp/executor-tmp'],
+                    args = ['node_worker.js', 'test-tmp/worker_config.json',
+                        'test-tmp/executor-tmp'],
                     timeoutId = setTimeout(function () {
                         deferred.reject('Worker did not respond in time, stderr: ' + stderr + ' stdout: ' + stdout);
                     }, 3000);
 
                 nodeWorkerProcess = childProcess.spawn('node', args,
-                    {cwd: 'src/server/middleware/executor/worker'});
+                    {cwd: path.join(__dirname, '..')});
                 nodeWorkerProcess.stderr.on('data', function (data) {
                     stderr += data.toString();
                 });
