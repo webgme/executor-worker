@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 var config = require('webgme/config/config.default'),
     validateConfig = require('webgme/config/validator');
 

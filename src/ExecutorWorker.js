@@ -25,7 +25,7 @@ define([
     'executor/WorkerInfo',
     'executor/JobInfo',
     'executor/OutputInfo',
-    'executor/ExecutorOutputQueue',
+    './ExecutorOutputQueue',
     'superagent',
     'rimraf'
 ], function (BlobClient,
@@ -236,7 +236,7 @@ define([
 
                                     jobInfo.finishTime = new Date().toISOString();
 
-                                    if (this.wasProcessCanceled(err, signal)) {
+                                    if (self.wasProcessCanceled(err, signal)) {
                                         jobInfo.status = 'CANCELED';
                                     } else if (err) {
                                         self.logger.error(jobInfo.hash + ' exec error: ' + util.inspect(err));

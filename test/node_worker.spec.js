@@ -3,7 +3,7 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-var testFixture = require('webgme/test/_globals');
+var testFixture = require('./globals');
 
 describe('NodeWorker', function () {
     'use strict';
@@ -228,7 +228,7 @@ describe('NodeWorker', function () {
                             should.equal(res.status, 'SUCCESS');
                             done();
                         });
-                    }, 100);
+                    }, 1000);
                 })
                 .catch(done);
         });

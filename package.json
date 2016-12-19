@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha test",
     "start": "node node_worker.js",
-    "build": "node ./node_modules/requirejs/bin/r.js -o rjs_build_node_worker.js"
+    "build": "node ./node_modules/requirejs/bin/r.js -o rjs_build_node_worker.js",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
