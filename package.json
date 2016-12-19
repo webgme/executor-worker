@@ -7,7 +7,8 @@
     "test": "node node_modules/mocha/bin/mocha test",
     "start": "node node_worker.js",
     "build": "node ./node_modules/requirejs/bin/r.js -o rjs_build_node_worker.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "travis": "npm install && npm run build && npm test"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,6 @@
     "rimraf": "2.5.4",
     "ssl-root-cas": "1.2.2",
     "superagent": "2.2.0",
-    "webgme": "2.7.1"
+    "webgme": "^2.0.0"
   }
 }
