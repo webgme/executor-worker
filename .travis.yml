@@ -1,0 +1,35 @@
+language: node_js
+services:
+  - mongodb
+
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - mongodb-2.6-precise
+
+    packages:
+      - mongodb-org-server
+
+cache:
+  directories:
+    - node_modules
+
+# git:
+#   depth: 5
+
+node_js:
+  - "4"
+  - "6"
+
+env:
+    # Set TEST_FOLDER to avoid webgme dist build (not used here)
+  - TEST_FOLDER=test
+
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+script: 
+    - "npm test"
