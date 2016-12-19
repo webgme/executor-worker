@@ -1,5 +1,5 @@
 {
-  "name": "executor-worker",
+  "name": "webgme-executor-worker",
   "version": "1.0.0",
   "description": "Workers for connecting to webgme executor framework",
   "main": "node_worker.js",
