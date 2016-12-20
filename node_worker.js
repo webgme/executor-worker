@@ -91,7 +91,7 @@ if (typeof define !== 'undefined') {
     });
 }
 
-if (nodeRequire.main === module) {
+function main() {
     var fs = nodeRequire('fs'),
         path = nodeRequire('path'),
         superagent = nodeRequire('superagent'),
@@ -139,9 +139,9 @@ if (nodeRequire.main === module) {
         'url',
         'q'
     ].forEach(function (name) {
-            'use strict';
-            requirejs.s.contexts._.defined[name] = nodeRequire(name);
-        });
+        'use strict';
+        requirejs.s.contexts._.defined[name] = nodeRequire(name);
+    });
 
     global.WebGMEGlobal = {
         getConfig: function () {
@@ -232,5 +232,10 @@ if (nodeRequire.main === module) {
             // (though `move config.json.tmp config.json` is preferred)
         });
     });
-
 }
+
+if (nodeRequire.main === module) {
+    main();
+}
+
+module.exports = main;
