@@ -11,7 +11,7 @@
     "travis": "npm install && npm test"
   },
   "bin": {
-    "node_worker": "./bin/node_worker"
+    "webgme-executor-worker": "./bin/webgme-executor-worker"
   },
   "repository": {
     "type": "git",
