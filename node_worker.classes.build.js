@@ -4508,7 +4508,7 @@ define('executor/OutputInfo',[], function () {
  * @author pmeijer / https://github.com/pmeijer
  */
 
-define('src/ExecutorOutputQueue',[], function () {
+define('executor-worker/ExecutorOutputQueue', [], function () {
     'use strict';
 
     function ExecutorOutputQueue(worker, jobInfo, interval, segmentSize) {
@@ -4643,7 +4643,7 @@ define('src/ExecutorOutputQueue',[], function () {
 // eb.executorClient.getInfoByStatus('CREATED',
 // function(err, res) { console.log('xxx ' + require('util').inspect(res)); })
 
-define('src/ExecutorWorker',[
+define('executor-worker/ExecutorWorker', [
     'blob/BlobClient',
     'blob/BlobMetadata',
     'fs',
@@ -5263,7 +5263,7 @@ define('src/ExecutorWorker',[
  * @author ksmyth / https://github.com/ksmyth
  */
 
-define('src/ExecutorWorkerController',[], function () {
+define('executor-worker/ExecutorWorkerController', [], function () {
     'use strict';
     var ExecutorWorkerController = function ($scope, worker) {
         this.$scope = $scope;
@@ -5359,9 +5359,9 @@ if (typeof define !== 'undefined') {
 
     define('node_worker', [
         'blob/BlobClient',
-        'src/ExecutorWorker',
+        'executor-worker/ExecutorWorker',
         'executor/JobInfo',
-        'src/ExecutorWorkerController',
+        'executor-worker/ExecutorWorkerController',
         'url'
     ], function (BlobClient, ExecutorWorker, JobInfo, ExecutorWorkerController, url) {
         'use strict';

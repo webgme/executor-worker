@@ -46,5 +46,6 @@ HOWTO: add label job
   Method 2: addLabelJob.js script:
     put all label job .zip files into a directory
     node addLabelJob.js http://localhost:8855/ *zip > labelJobs.json
+    Remove non-JSON (logging information) from labelJobs.json
     move /y labelJobs.json ..\labelJobs.json
  labelJobs.json should go where WebGME's working directory is, i.e. where `node app.js` is running. It will be loaded and re-loaded automatically

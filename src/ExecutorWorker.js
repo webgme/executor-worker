@@ -12,7 +12,7 @@
 // eb.executorClient.getInfoByStatus('CREATED',
 // function(err, res) { console.log('xxx ' + require('util').inspect(res)); })
 
-define([
+define('executor-worker/ExecutorWorker', [
     'blob/BlobClient',
     'blob/BlobMetadata',
     'fs',
