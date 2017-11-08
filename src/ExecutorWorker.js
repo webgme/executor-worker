@@ -571,11 +571,13 @@ define([
                                     (function (label) {
                                         var info = {hash: response.labelJobs[label]};
                                         self.startJob(info, function (err) {
-                                            this.availableProcessesContainer.availableProcesses += 1;
+                                            self.availableProcessesContainer.availableProcesses += 1;
+                                            delete self.runningJobs[info.hash];
                                             self.logger.error('Label job ' + label + '(' + info.hash + ') failed to run: ' +
                                                 err + '. Status: ' + info.status);
                                         }, function (jobInfo/*, jobDir, executorConfig*/) {
-                                            this.availableProcessesContainer.availableProcesses += 1;
+                                            self.availableProcessesContainer.availableProcesses += 1;
+                                            delete self.runningJobs[info.hash];
                                             if (jobInfo.status !== 'FAILED_TO_EXECUTE') {
                                                 self.clientRequest.labels.push(label);
                                                 self.logger.info('Label job ' + label + ' succeeded. Labels are ' +
