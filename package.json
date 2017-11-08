@@ -8,7 +8,7 @@
     "start": "node node_worker.js",
     "build": "node ./node_modules/requirejs/bin/r.js -o rjs_build_node_worker.js",
     "prepublish": "npm run build",
-    "travis": "npm install && npm test"
+    "travis": "npm install && npm run build && npm test"
   },
   "bin": {
     "webgme-executor-worker": "./bin/webgme-executor-worker"
