@@ -3320,6 +3320,10 @@ define('blob/BlobClient',[
      */
     var BlobClient = function (parameters) {
         var self = this;
+
+        // Store these to be able to create a new instance from an instance.
+        this.parameters = parameters;
+
         this.artifacts = [];
         if (parameters && parameters.logger) {
             this.logger = parameters.logger;
@@ -3362,8 +3366,6 @@ define('blob/BlobClient',[
         }
         this.relativeUrl = '/rest/blob/';
         this.blobUrl = this.origin + this.relativeUrl;
-        // TODO: TOKEN???
-        // TODO: any ways to ask for this or get it from the configuration?
 
         this.isNodeOrNodeWebKit = typeof process !== 'undefined';
         if (this.isNodeOrNodeWebKit) {
@@ -3382,6 +3384,15 @@ define('blob/BlobClient',[
 
         this.logger.debug('origin', this.origin);
         this.logger.debug('blobUrl', this.blobUrl);
+    };
+
+    /**
+     * Creates and returns a new instance of a BlobClient with the same settings as the current one.
+     * This can be used to avoid issues with the artifacts being book-kept at the instance.
+     * @returns {BlobClient} A new instance of a BlobClient
+     */
+    BlobClient.prototype.getNewInstance = function () {
+        return new BlobClient(this.parameters);
     };
 
     BlobClient.prototype.getMetadataURL = function (hash) {
@@ -3644,7 +3655,7 @@ define('blob/BlobClient',[
             req.agent(this.keepaliveAgent);
         }
 
-        if (req.pipe) {
+        if (typeof window === 'undefined') {
             // running on node
             var Writable = require('stream').Writable;
             var BuffersWritable = function (options) {
@@ -3885,6 +3896,10 @@ define('blob/BlobClient',[
         } while (bytes >= thresh);
 
         return bytes.toFixed(1) + ' ' + units[u];
+    };
+
+    BlobClient.prototype.setToken = function (token) {
+        this.webgmeToken = token;
     };
 
     return BlobClient;
@@ -5187,11 +5202,13 @@ define('src/ExecutorWorker',[
                                     (function (label) {
                                         var info = {hash: response.labelJobs[label]};
                                         self.startJob(info, function (err) {
-                                            this.availableProcessesContainer.availableProcesses += 1;
+                                            self.availableProcessesContainer.availableProcesses += 1;
+                                            delete self.runningJobs[info.hash];
                                             self.logger.error('Label job ' + label + '(' + info.hash + ') failed to run: ' +
                                                 err + '. Status: ' + info.status);
                                         }, function (jobInfo/*, jobDir, executorConfig*/) {
-                                            this.availableProcessesContainer.availableProcesses += 1;
+                                            self.availableProcessesContainer.availableProcesses += 1;
+                                            delete self.runningJobs[info.hash];
                                             if (jobInfo.status !== 'FAILED_TO_EXECUTE') {
                                                 self.clientRequest.labels.push(label);
                                                 self.logger.info('Label job ' + label + ' succeeded. Labels are ' +
