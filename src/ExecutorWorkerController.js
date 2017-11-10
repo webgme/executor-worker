@@ -5,7 +5,7 @@
  * @author ksmyth / https://github.com/ksmyth
  */
 
-define([], function () {
+define('executor-worker/ExecutorWorkerController', [], function () {
     'use strict';
     var ExecutorWorkerController = function ($scope, worker) {
         this.$scope = $scope;

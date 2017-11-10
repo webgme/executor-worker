@@ -31,9 +31,9 @@ if (typeof define !== 'undefined') {
 
     define('node_worker', [
         'blob/BlobClient',
-        'src/ExecutorWorker',
+        'executor-worker/ExecutorWorker',
         'executor/JobInfo',
-        'src/ExecutorWorkerController',
+        'executor-worker/ExecutorWorkerController',
         'url'
     ], function (BlobClient, ExecutorWorker, JobInfo, ExecutorWorkerController, url) {
         'use strict';

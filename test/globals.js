@@ -7,7 +7,7 @@
 
 'use strict';
 
-var testFixture = require('webgme/test/_globals'),
+var testFixture = require('webgme-engine/test/_globals'),
     WEBGME_CONFIG_PATH = './config';
 
 // This flag will make sure the config.test.js is being used

@@ -16,25 +16,10 @@ var filearg = process.argv[3];
 
 var requirejs = require('requirejs');
 requirejs.config({
-    baseUrl: __dirname + '/..',
+    baseUrl: __dirname,
     paths: {
-        //WebGME custom modules
-        eventDispatcher: '../webgme/common/EventDispatcher',
-        notificationManager: 'js/NotificationManager',
-        clientUtil: 'js/util',
-        loaderCircles: 'js/Loader/LoaderCircles',
-        loaderProgressBar: 'js/Loader/LoaderProgressBar',
-
-        codemirror: 'lib/codemirror/codemirror.amd',
-        'jquery-csszoom': 'lib/jquery/jquery.csszoom',
-
-        jszip: 'bower_components/jszip/dist/jszip',
-        executor: 'src/rest/executor',
-        executor_old: 'src/rest/executor_old',
-        blob: '../webgme/src/middleware/blob',
-        superagent: 'lib/superagent/superagent',
-        q: 'lib/q/q',
-        debug: 'bower_components/visionmedia-debug/dist/debug'
+        blob: 'node_modules/webgme-engine/src/common/blob',
+        common: 'node_modules/webgme-engine/src/common'
     },
     nodeRequire: nodeRequire
 });

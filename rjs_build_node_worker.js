@@ -3,9 +3,9 @@
     out: 'node_worker.classes.build.js',
     baseUrl: './',
     paths: {
-        blob: './node_modules/webgme/src/common/blob',
-        common: './node_modules/webgme/src/common',
-        executor: './node_modules/webgme/src/common/executor',
+        blob: './node_modules/webgme-engine/src/common/blob',
+        common: './node_modules/webgme-engine/src/common',
+        executor: './node_modules/webgme-engine/src/common/executor',
         superagent: 'empty:',
         fs: 'empty:',
         util: 'empty:',
@@ -15,7 +15,8 @@
         minimatch: 'empty:',
         rimraf: 'empty:',
         url: 'empty:',
-        q: 'empty:'
+        q: 'empty:',
+        'executor-worker': 'src'
     },
     optimize: 'none',
     include: ['./node_modules/requirejs/require'],

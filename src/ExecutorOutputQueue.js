@@ -4,7 +4,7 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-define([], function () {
+define('executor-worker/ExecutorOutputQueue', [], function () {
     'use strict';
 
     function ExecutorOutputQueue(worker, jobInfo, interval, segmentSize) {
