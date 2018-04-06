@@ -33,7 +33,7 @@
     "inherits": "2.0.3",
     "mocha": "^3.2.0",
     "requirejs": "2.1.20",
-    "webgme": "^2.19.0 >= 2.18.0"
+    "webgme": ">= 2.24.0"
   },
   "dependencies": {
     "agentkeepalive": "2.2.0",

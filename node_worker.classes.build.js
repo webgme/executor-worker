@@ -2105,7 +2105,7 @@ var requirejs, require, define;
 define("node_modules/requirejs/require", function(){});
 
 /*globals define*/
-/*jshint browser: true, node:true*/
+/*eslint-env node, browser*/
 
 /**
  * Client module for accessing the blob.
@@ -2123,7 +2123,7 @@ define('blob/BlobConfig',[], function () {
     return BlobConfig;
 });
 /*globals define*/
-/*jshint browser: true, node:true*/
+/*eslint-env node, browser*/
 
 /**
  * Client module for accessing the blob.
@@ -2161,7 +2161,8 @@ define('blob/BlobMetadata',['blob/BlobConfig'], function (BlobConfig) {
                 for (key in this.content) {
                     if (this.content.hasOwnProperty(key)) {
                         if (BlobConfig.hashRegex.test(this.content[key].content) === false) {
-                            throw new Error('BlobMetadata is malformed: hash \'' + this.content[key].content + '\'is invalid');
+                            throw new Error('BlobMetadata is malformed: hash \'' + this.content[key].content +
+                                '\'is invalid');
                         }
                     }
                 }
@@ -2222,7 +2223,8 @@ define('blob/BlobMetadata',['blob/BlobConfig'], function (BlobConfig) {
 });
 
 /*globals define*/
-/*jshint node: true, browser: true, camelcase: false*/
+/*eslint-env node, browser*/
+/*eslint camelcase: 0*/
 
 /**
  * @author mmaroti / https://github.com/mmaroti
@@ -2976,7 +2978,7 @@ define('blob/BlobMetadata',['blob/BlobConfig'], function (BlobConfig) {
 }());
 
 /*globals define*/
-/*jshint browser: true, node:true*/
+/*eslint-env node, browser*/
 
 /**
  * @author lattmann / https://github.com/lattmann
@@ -3006,12 +3008,12 @@ define('blob/Artifact',[
         this.blobClientGetMetadata = tasync.unwrap(tasync.throttle(tasync.wrap(blobClient.getMetadata), 5));
         // TODO: use BlobMetadata class here
         this.descriptor = descriptor || {
-                name: name + '.zip',
-                size: 0,
-                mime: 'application/zip',
-                content: {},
-                contentType: 'complex'
-            }; // name and hash pairs
+            name: name + '.zip',
+            size: 0,
+            mime: 'application/zip',
+            content: {},
+            contentType: 'complex'
+        }; // name and hash pairs
     };
 
     /**
@@ -3267,7 +3269,8 @@ define('blob/Artifact',[
     return Artifact;
 });
 
-/*jshint node: true, browser: true, bitwise: false*/
+/*globals define*/
+/*eslint-env node, browser*/
 
 /**
  * @author kecso / https://github.com/kecso
@@ -3291,8 +3294,8 @@ define('common/util/uint',[],function () {
         uint8ArrayToString: uint8ArrayToString
     };
 });
-/*globals define, console*/
-/*jshint browser: true, node:true*/
+/*globals define, Uint8Array, ArrayBuffer*/
+/*eslint-env node, browser*/
 
 /**
  * Client module for accessing the blob.
@@ -3328,6 +3331,7 @@ define('blob/BlobClient',[
         if (parameters && parameters.logger) {
             this.logger = parameters.logger;
         } else {
+            /*eslint-disable no-console*/
             var doLog = function () {
                 console.log.apply(console, arguments);
             };
@@ -3339,6 +3343,7 @@ define('blob/BlobClient',[
                 error: doLog
             };
             console.warn('Since v1.3.0 BlobClient requires a logger, falling back on console.log.');
+            /*eslint-enable no-console*/
         }
 
         if (parameters && parameters.uploadProgressHandler) {
@@ -3468,11 +3473,13 @@ define('blob/BlobClient',[
         this.logger.debug('putFile', name);
 
         function toArrayBuffer(buffer) {
-            var ab = new ArrayBuffer(buffer.length);
-            var view = new Uint8Array(ab);
+            var ab = new ArrayBuffer(buffer.length),
+                view = new Uint8Array(ab);
+
             for (var i = 0; i < buffer.length; ++i) {
                 view[i] = buffer[i];
             }
+
             return ab;
         }
 
@@ -3572,7 +3579,8 @@ define('blob/BlobClient',[
      * @param {object.<string, string|Buffer|ArrayBuffer>} o - Keys are file names and values the content.
      * @param {function} [callback] - if provided no promise will be returned.
      *
-     * @return {external:Promise} On success the promise will be resolved with {object} <b>fileNamesToMetadataHashes</b>.<br>
+     * @return {external:Promise} On success the promise will be resolved with {object}
+     * <b>fileNamesToMetadataHashes</b>.<br>
      * On error the promise will be rejected with {@link Error} <b>error</b>.
      */
     BlobClient.prototype.putFiles = function (o, callback) {
@@ -3906,7 +3914,7 @@ define('blob/BlobClient',[
 });
 
 /*globals define*/
-/*jshint browser: true, node:true*/
+/*eslint-env node, browser*/
 
 /**
  * Client module for creating, monitoring executor jobs.
@@ -3935,6 +3943,7 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
         if (parameters.logger) {
             this.logger = parameters.logger;
         } else {
+            /*eslint-disable no-console*/
             var doLog = function () {
                 console.log.apply(console, arguments);
             };
@@ -3946,6 +3955,7 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
                 error: doLog
             };
             console.warn('Since v1.3.0 ExecutorClient requires a logger, falling back on console.log.');
+            /*eslint-enable no-console*/
         }
 
         this.logger.debug('ctor', {metadata: parameters});
@@ -3988,8 +3998,9 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
      *
      * To make the worker post output either the outputInterval and/or outputSegmentSize must be specified.
      * <br> - If both are negative (or falsy) no output will be given.
-     * <br> - When both are specified a timeout will be set at start (and after each posted output). If the number of lines
-     *  exceeds outputSegmentSize during that timeout, the output will be posted and a new timeout will be triggered.
+     * <br> - When both are specified a timeout will be set at start (and after each posted output).
+     * If the number of lines exceeds outputSegmentSize during that timeout, the output will be posted and a
+     * new timeout will be triggered.
      * <br>
      * N.B. even though a short outputInterval is set, the worker won't post new output until the responses from
      * previous posts have returned. Before the job returns with a "completed" status code, all queued outputs will be
@@ -4033,7 +4044,8 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
      * Creates a new job.
      *
      * @param {object} jobInfo - initial information about the job must contain the hash.
-     * @param {object} jobInfo.hash - a unique id for the job (e.g. the hash of the artifact containing the executor_config.json).
+     * @param {object} jobInfo.hash - a unique id for the job (e.g. the hash of the artifact
+     * containing the executor_config.json).
      * @param {function} [callback] - if provided no promise will be returned.
      *
      * @return {external:Promise}  On success the promise will be resolved with {@link JobInfo} <b>result</b>.<br>
@@ -4291,13 +4303,13 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
     ExecutorClient.prototype._ensureAuthenticated = function (options, callback) {
         //this function enables the session of the client to be authenticated
         //TODO currently this user does not have a session, so it has to upgrade the options always!!!
-//        if (options.headers) {
-//            options.headers.webgmeclientsession = this._clientSession;
-//        } else {
-//            options.headers = {
-//                'webgmeclientsession': this._clientSession
-//            }
-//        }
+        //        if (options.headers) {
+        //            options.headers.webgmeclientsession = this._clientSession;
+        //        } else {
+        //            options.headers = {
+        //                'webgmeclientsession': this._clientSession
+        //            }
+        //        }
         callback(null, options);
     };
     //</editor-fold>
@@ -4306,7 +4318,7 @@ define('executor/ExecutorClient',['superagent', 'q'], function (superagent, Q) {
 });
 
 /*globals define*/
-/*jshint node:true*/
+/*eslint-env node*/
 
 /**
  * @author ksmyth / https://github.com/ksmyth
@@ -4337,7 +4349,7 @@ define('executor/WorkerInfo',[], function () {
 
 
 /*globals define*/
-/*jshint node:true*/
+/*eslint-env node*/
 
 /**
  * @author lattmann / https://github.com/lattmann
@@ -4780,147 +4792,147 @@ define('executor-worker/ExecutorWorker', [
             }
 
             // download artifacts
-            self.blobClient.getObject(jobInfo.hash, function (err, content) {
+            var jobDir = path.normalize(path.join(self.workingDirectory, jobInfo.hash));
+
+            if (!fs.existsSync(jobDir)) {
+                fs.mkdirSync(jobDir);
+            }
+
+            var zipPath = path.join(jobDir, self.sourceFilename);
+            var writeStream = fs.createWriteStream(zipPath);
+
+            writeStream.on('error', function (err) {
+                afterZipDownloaded(err);
+            });
+
+            writeStream.on('finish', function () {
+                afterZipDownloaded();
+            });
+
+            self.blobClient.getStreamObject(jobInfo.hash, writeStream);
+
+            var afterZipDownloaded = function (err) {
                 if (err) {
-                    jobInfo.status = 'FAILED_SOURCE_COULD_NOT_BE_OBTAINED';
-                    errorCallback('Failed obtaining job source content, err: ' + err.toString());
+                    jobInfo.status = 'FAILED_CREATING_SOURCE_ZIP';
+                    errorCallback('Failed creating source zip-file, err: ' + err.toString());
                     return;
                 }
 
-                var jobDir = path.normalize(path.join(self.workingDirectory, jobInfo.hash));
+                // unzip downloaded file
 
-                if (!fs.existsSync(jobDir)) {
-                    fs.mkdirSync(jobDir);
-                }
+                var args = [path.basename(zipPath)];
+                args.unshift.apply(args, UNZIP_ARGS);
+                childProcess.execFile(UNZIP_EXE, args, {cwd: jobDir},
+                    function (err, stdout, stderr) {
+                        if (err) {
+                            jobInfo.status = 'FAILED_UNZIP';
+                            jobInfo.finishTime = new Date().toISOString();
+                            self.logger.error(stderr);
+                            errorCallback(err);
+                            return;
+                        }
 
-                var zipPath = path.join(jobDir, self.sourceFilename);
+                        // delete downloaded file
+                        fs.unlinkSync(zipPath);
 
-                //content = new Uint8Array(content);
-                content = new Buffer(new Uint8Array(content));
-                fs.writeFile(zipPath, content, function (err) {
-                    if (err) {
-                        jobInfo.status = 'FAILED_CREATING_SOURCE_ZIP';
-                        errorCallback('Failed creating source zip-file, err: ' + err.toString());
-                        return;
-                    }
+                        jobInfo.startTime = new Date().toISOString();
 
-                    // unzip downloaded file
-
-                    var args = [path.basename(zipPath)];
-                    args.unshift.apply(args, UNZIP_ARGS);
-                    childProcess.execFile(UNZIP_EXE, args, {cwd: jobDir},
-                        function (err, stdout, stderr) {
+                        // get cmd file dynamically from the this.executorConfigFilename file
+                        fs.readFile(path.join(jobDir, self.executorConfigFilename), 'utf8', function (err, data) {
                             if (err) {
-                                jobInfo.status = 'FAILED_UNZIP';
+                                jobInfo.status = 'FAILED_EXECUTOR_CONFIG';
                                 jobInfo.finishTime = new Date().toISOString();
-                                self.logger.error(stderr);
-                                errorCallback(err);
+                                errorCallback('Could not read ' + self.executorConfigFilename + ' err:' + err);
+                                return;
+                            }
+                            var executorConfig;
+                            try {
+                                executorConfig = JSON.parse(data);
+                            } catch (e) {
+                            }
+
+                            self.logger.debug('executorConfig', executorConfig);
+                            if (typeof executorConfig !== 'object' ||
+                                typeof executorConfig.cmd !== 'string' ||
+                                typeof executorConfig.resultArtifacts !== 'object') {
+
+                                jobInfo.status = 'FAILED_EXECUTOR_CONFIG';
+                                jobInfo.finishTime = new Date().toISOString();
+                                errorCallback(self.executorConfigFilename +
+                                    ' is missing or wrong type for cmd and/or resultArtifacts.');
                                 return;
                             }
 
-                            // delete downloaded file
-                            fs.unlinkSync(zipPath);
-
-                            jobInfo.startTime = new Date().toISOString();
-
-                            // get cmd file dynamically from the this.executorConfigFilename file
-                            fs.readFile(path.join(jobDir, self.executorConfigFilename), 'utf8', function (err, data) {
-                                if (err) {
-                                    jobInfo.status = 'FAILED_EXECUTOR_CONFIG';
-                                    jobInfo.finishTime = new Date().toISOString();
-                                    errorCallback('Could not read ' + self.executorConfigFilename + ' err:' + err);
-                                    return;
-                                }
-                                var executorConfig;
-                                try {
-                                    executorConfig = JSON.parse(data);
-                                } catch (e) {
-                                }
-
-                                self.logger.debug('executorConfig', executorConfig);
-                                if (typeof executorConfig !== 'object' ||
-                                    typeof executorConfig.cmd !== 'string' ||
-                                    typeof executorConfig.resultArtifacts !== 'object') {
-
-                                    jobInfo.status = 'FAILED_EXECUTOR_CONFIG';
-                                    jobInfo.finishTime = new Date().toISOString();
-                                    errorCallback(self.executorConfigFilename +
-                                        ' is missing or wrong type for cmd and/or resultArtifacts.');
-                                    return;
-                                }
-
-                                var cmd = executorConfig.cmd;
-                                var args = executorConfig.args || [];
-                                self.logger.debug('working directory: ' + jobDir + ' executing: ' + cmd +
-                                    ' with args: ' + args.toString());
-                                var outputSegmentSize = executorConfig.outputSegmentSize || -1;
-                                var outputInterval = executorConfig.outputInterval || -1;
-                                var outputQueue;
-                                var child = childProcess.spawn(cmd, args, {
-                                    cwd: jobDir,
-                                    stdio: ['ignore', 'pipe', 'pipe']
-                                });
-                                var childExit = function (err, signal) {
-
-                                    childExit = function () {
-                                    }; // "Note that the exit-event may or may not fire after an error has occurred"
-
-                                    jobInfo.finishTime = new Date().toISOString();
-
-                                    if (self.wasProcessCanceled(err, signal)) {
-                                        jobInfo.status = 'CANCELED';
-                                    } else if (err) {
-                                        self.logger.error(jobInfo.hash + ' exec error: ' + util.inspect(err));
-                                        jobInfo.status = 'FAILED_TO_EXECUTE';
-                                    }
-
-                                    // TODO: save stderr and stdout to files.
-                                    if (outputQueue) {
-                                        outputQueue.sendAllOutputs(function (/*err*/) {
-                                            successCallback(jobInfo, jobDir, executorConfig);
-                                        });
-                                    } else {
-                                        successCallback(jobInfo, jobDir, executorConfig);
-                                    }
-                                    // normally self.saveJobResults(jobInfo, jobDir, executorConfig);
-                                };
-
-                                self.runningJobs[jobInfo.hash] = {
-                                    process: child,
-                                    terminated: false
-                                };
-
-                                var outlog = fs.createWriteStream(path.join(jobDir, 'job_stdout.txt'));
-                                child.stdout.pipe(outlog);
-                                child.stdout.pipe(fs.createWriteStream(path.join(self.workingDirectory,
-                                    jobInfo.hash.substr(0, 6) + '_stdout.txt')));
-                                // TODO: maybe put in the same file as stdout
-                                child.stderr.pipe(fs.createWriteStream(path.join(jobDir, 'job_stderr.txt')));
-
-                                // Need to use logger here since node webkit does not have process.stdout/err.
-                                child.stdout.on('data', function (data) {
-                                    self.logger.info(data.toString());
-                                });
-                                child.stderr.on('data', function (data) {
-                                    self.logger.error(data.toString());
-                                });
-
-                                // FIXME can it happen that the close event arrives before error?
-                                child.on('error', childExit);
-                                child.on('close', childExit);
-
-                                if (outputInterval > - 1 || outputSegmentSize > -1) {
-                                    outputQueue = new ExecutorOutputQueue(self, jobInfo,
-                                        outputInterval, outputSegmentSize);
-                                    child.stdout.on('data', function (data) {
-                                        outputQueue.addOutput(data.toString());
-                                    });
-                                }
+                            var cmd = executorConfig.cmd;
+                            var args = executorConfig.args || [];
+                            self.logger.debug('working directory: ' + jobDir + ' executing: ' + cmd +
+                                ' with args: ' + args.toString());
+                            var outputSegmentSize = executorConfig.outputSegmentSize || -1;
+                            var outputInterval = executorConfig.outputInterval || -1;
+                            var outputQueue;
+                            var child = childProcess.spawn(cmd, args, {
+                                cwd: jobDir,
+                                stdio: ['ignore', 'pipe', 'pipe']
                             });
-                        });
+                            var childExit = function (err, signal) {
 
-                });
-            });
+                                childExit = function () {
+                                }; // "Note that the exit-event may or may not fire after an error has occurred"
+
+                                jobInfo.finishTime = new Date().toISOString();
+
+                                if (self.wasProcessCanceled(err, signal)) {
+                                    jobInfo.status = 'CANCELED';
+                                } else if (err) {
+                                    self.logger.error(jobInfo.hash + ' exec error: ' + util.inspect(err));
+                                    jobInfo.status = 'FAILED_TO_EXECUTE';
+                                }
+
+                                // TODO: save stderr and stdout to files.
+                                if (outputQueue) {
+                                    outputQueue.sendAllOutputs(function (/*err*/) {
+                                        successCallback(jobInfo, jobDir, executorConfig);
+                                    });
+                                } else {
+                                    successCallback(jobInfo, jobDir, executorConfig);
+                                }
+                                // normally self.saveJobResults(jobInfo, jobDir, executorConfig);
+                            };
+
+                            self.runningJobs[jobInfo.hash] = {
+                                process: child,
+                                terminated: false
+                            };
+
+                            var outlog = fs.createWriteStream(path.join(jobDir, 'job_stdout.txt'));
+                            child.stdout.pipe(outlog);
+                            child.stdout.pipe(fs.createWriteStream(path.join(self.workingDirectory,
+                                jobInfo.hash.substr(0, 6) + '_stdout.txt')));
+                            // TODO: maybe put in the same file as stdout
+                            child.stderr.pipe(fs.createWriteStream(path.join(jobDir, 'job_stderr.txt')));
+
+                            // Need to use logger here since node webkit does not have process.stdout/err.
+                            child.stdout.on('data', function (data) {
+                                self.logger.info(data.toString());
+                            });
+                            child.stderr.on('data', function (data) {
+                                self.logger.error(data.toString());
+                            });
+
+                            // FIXME can it happen that the close event arrives before error?
+                            child.on('error', childExit);
+                            child.on('close', childExit);
+
+                            if (outputInterval > -1 || outputSegmentSize > -1) {
+                                outputQueue = new ExecutorOutputQueue(self, jobInfo,
+                                    outputInterval, outputSegmentSize);
+                                child.stdout.on('data', function (data) {
+                                    outputQueue.addOutput(data.toString());
+                                });
+                            }
+                        });
+                    });
+            }
         });
     };
 
@@ -5158,8 +5170,8 @@ define('executor-worker/ExecutorWorker', [
                 req.set('x-executor-nonce', self.executorClient.executorNonce);
             }
             req
-                //.set('Content-Type', 'application/json')
-                //oReq.timeout = 25 * 1000;
+            //.set('Content-Type', 'application/json')
+            //oReq.timeout = 25 * 1000;
 
                 .send(self.clientRequest)
                 .end(function (err, res) {
@@ -5242,7 +5254,7 @@ define('executor-worker/ExecutorWorker', [
         var outputInfo;
 
         jobInfo.outputNumber = typeof jobInfo.outputNumber === 'number' ?
-        jobInfo.outputNumber + 1 : 0;
+            jobInfo.outputNumber + 1 : 0;
 
         outputInfo = new OutputInfo(jobInfo.hash, {
             output: output,
