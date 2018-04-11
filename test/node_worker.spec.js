@@ -17,6 +17,22 @@ describe('NodeWorker', function () {
         should = testFixture.should,
         ExecutorClient = testFixture.ExecutorClient,
         BlobClient = testFixture.BlobClient,
+        logger = testFixture.Logger.create('node_worker:test', {
+            //patterns: ['gme:test:*cache'],
+            transports: [{
+                transportType: 'Console',
+                options: {
+                    level: 'error',
+                    colorize: true,
+                    timestamp: true,
+                    prettyPrint: true,
+                    //handleExceptions: true, // ignored by default
+                    //exitOnError: false,
+                    depth: 4,
+                    debugStdout: true
+                }
+            }]
+        }, false),
         executorClient,
         blobClient,
         server,
@@ -71,10 +87,10 @@ describe('NodeWorker', function () {
                 clientsParam.httpsecure = useHttpsProxy;
                 clientsParam.executorNonce = gmeConfig.executor.nonce;
 
-                clientsParam.logger = testFixture.logger.fork('NodeWorker:ExecClient');
+                clientsParam.logger = logger.fork('NodeWorker:ExecClient');
                 executorClient = new ExecutorClient(clientsParam);
 
-                clientsParam.logger = testFixture.logger.fork('NodeWorker:BlobClient');
+                clientsParam.logger = logger.fork('NodeWorker:BlobClient');
                 blobClient = new BlobClient(clientsParam);
                 workerConfig[server.getUrl()] = workerNonce ? {executorNonce: workerNonce} : {};
                 return Q.nfcall(fs.writeFile, 'test-tmp/worker_config.json', JSON.stringify(workerConfig));
@@ -490,7 +506,7 @@ describe('NodeWorker', function () {
                     done();
                 } else {
                     done(new Error('Worker did not attach, stdout: ' + result.stdout + ', stderr: ' +
-                                   result.stderr));
+                        result.stderr));
                 }
             });
         });
@@ -803,7 +819,7 @@ describe('NodeWorker', function () {
                 }
                 if (result.connected) {
                     done(new Error('Worker did attach when should not, stdout: ' + result.stdout + ', stderr: ' +
-                                   result.stderr));
+                        result.stderr));
                 } else {
                     done();
                 }
@@ -850,7 +866,7 @@ describe('NodeWorker', function () {
                     done();
                 } else {
                     done(new Error('Worker did not attach, stdout: ' + result.stdout + ', stderr: ' +
-                                   result.stderr));
+                        result.stderr));
                 }
             });
         });
