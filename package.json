@@ -41,7 +41,7 @@
     "minimatch": "3.0.3",
     "q": "1.4.1",
     "rimraf": "2.5.4",
-    "ssl-root-cas": "1.2.2",
+    "ssl-root-cas": "1.2.5",
     "superagent": "2.2.0"
   }
 }
