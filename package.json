@@ -1,6 +1,6 @@
 {
   "name": "webgme-executor-worker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Worker for connecting to webgme executor framework",
   "main": "node_worker.js",
   "scripts": {
