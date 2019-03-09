@@ -240,7 +240,7 @@ define('executor-worker/ExecutorWorker', [
 
                                 if (self.wasProcessCanceled(err, signal)) {
                                     jobInfo.status = 'CANCELED';
-                                } else if (err) {
+                                } else if (err !== 0) {
                                     self.logger.error(jobInfo.hash + ' exec error: ' + util.inspect(err));
                                     jobInfo.status = 'FAILED_TO_EXECUTE';
                                 }
