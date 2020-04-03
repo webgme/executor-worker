@@ -4794,7 +4794,8 @@ define('executor-worker/ExecutorWorker', [
             server: parameters.server,
             serverPort: parameters.serverPort,
             httpsecure: parameters.httpsecure,
-            logger: parameters.logger
+            logger: parameters.logger,
+            apiToken: parameters.apiToken
         });
 
         if (parameters.executorNonce) {
@@ -5218,6 +5219,9 @@ define('executor-worker/ExecutorWorker', [
             var req = superagent.post(self.executorClient.executorUrl + 'worker');
             if (self.executorClient.executorNonce) {
                 req.set('x-executor-nonce', self.executorClient.executorNonce);
+            }
+            if (self.executorClient.apiToken) {
+                req.set('x-api-token', self.executorClient.apiToken);
             }
             req
             //.set('Content-Type', 'application/json')
