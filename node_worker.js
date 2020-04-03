@@ -51,7 +51,8 @@ if (typeof define !== 'undefined') {
                 availableProcessesContainer: availableProcessesContainer,
                 workingDirectory: tempPath,
                 executorNonce: parameters.executorNonce,
-                logger: logger
+                logger: logger,
+                apiToken: parameters.apiToken
             });
 
             log('Connecting to ' + webGMEUrl);
