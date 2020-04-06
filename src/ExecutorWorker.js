@@ -94,7 +94,8 @@ define('executor-worker/ExecutorWorker', [
             server: parameters.server,
             serverPort: parameters.serverPort,
             httpsecure: parameters.httpsecure,
-            logger: parameters.logger
+            logger: parameters.logger,
+            apiToken: parameters.apiToken
         });
 
         this.executorClient = new ExecutorClient({
