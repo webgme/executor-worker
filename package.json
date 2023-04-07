@@ -33,7 +33,7 @@
     "inherits": "2.0.3",
     "mocha": "^5.2.0",
     "requirejs": "2.1.20",
-    "webgme": "git+https://github.com/webgme/webgme.git"
+    "webgme": "webgme/webgme#master"
   },
   "dependencies": {
     "agentkeepalive": "2.2.0",
