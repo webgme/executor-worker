@@ -3271,23 +3271,24 @@ define('blob/Artifact',[
 
 /*globals define*/
 /*eslint-env node, browser*/
-
 /**
  * @author kecso / https://github.com/kecso
  */
-
-define('common/util/uint',[],function () {
+define('common/util/uint',[], function () {
     'use strict';
 
+    // As the earlier used escape function is outdated and crashed in some scenarios, we replaced with this approach
+    var decoder = null;
+    if (typeof window === 'undefined') {
+        var util = require('util');
+        decoder = new util.TextDecoder();
+    } else {
+        decoder = new TextDecoder();
+    }
     //this helper function is necessary as in case of large json objects,
     // the library standard function causes stack overflow
     function uint8ArrayToString(uintArray) {
-        var resultString = '',
-            i;
-        for (i = 0; i < uintArray.byteLength; i++) {
-            resultString += String.fromCharCode(uintArray[i]);
-        }
-        return decodeURIComponent(escape(resultString));
+        return decoder.decode(uintArray);
     }
 
     return {
@@ -3296,7 +3297,6 @@ define('common/util/uint',[],function () {
 });
 /*globals define, Uint8Array, ArrayBuffer, WebGMEGlobal*/
 /*eslint-env node, browser*/
-
 /**
  * Client module for accessing the blob.
  *
@@ -3466,7 +3466,8 @@ define('blob/BlobClient',[
     /**
      * Adds a file to the blob storage.
      * @param {string} name - file name.
-     * @param {string|Buffer|ArrayBuffer} data - file content.
+     * @param {string|Buffer|ArrayBuffer|stream.Readable} data - file content. 
+     * !ReadStream currently only available from a nodejs setting
      * @param {function} [callback] - if provided no promise will be returned.
      *
      * @return {external:Promise} On success the promise will be resolved with {string} <b>metadataHash</b>.<br>
@@ -3476,7 +3477,8 @@ define('blob/BlobClient',[
         var deferred = Q.defer(),
             self = this,
             contentLength,
-            req;
+            req,
+            stream = null;
 
         this.logger.debug('putFile', name);
 
@@ -3491,6 +3493,9 @@ define('blob/BlobClient',[
             return ab;
         }
 
+        if (typeof window === 'undefined') {
+            stream = require('stream');
+        }
         // On node-webkit, we use XMLHttpRequest, but xhr.send thinks a Buffer is a string and encodes it in utf-8 -
         // send an ArrayBuffer instead.
         if (typeof window !== 'undefined' && typeof Buffer !== 'undefined' && data instanceof Buffer) {
@@ -3511,26 +3516,45 @@ define('blob/BlobClient',[
 
         this._setAuthHeaders(req);
 
-        if (typeof data !== 'string' && !(data instanceof String) && typeof window === 'undefined') {
+        if (typeof data !== 'string' &&
+        !(data instanceof String) &&
+        typeof window === 'undefined' &&
+        !(data instanceof stream.Readable)) {
             req.set('Content-Length', contentLength);
         }
 
-        req.set('Content-Type', 'application/octet-stream')
-            .send(data)
-            .on('progress', function (event) {
-                self.uploadProgressHandler(name, event);
-            })
-            .end(function (err, res) {
-                if (err || res.status > 399) {
-                    deferred.reject(err || new Error(res.status));
-                    return;
-                }
+        req.set('Content-Type', 'application/octet-stream');
+
+        if (typeof window === 'undefined' && data instanceof stream.Readable) {
+            const DEFAULT_ERROR = new Error('Failed to send stream data completely');
+            const errorHandler = err => deferred.reject(err || DEFAULT_ERROR);
+            data.on('error', errorHandler);
+            req.on('error', errorHandler);
+            req.on('response', function (res) {
                 var response = res.body;
                 // Get the first one
                 var hash = Object.keys(response)[0];
                 self.logger.debug('putFile - result', hash);
                 deferred.resolve(hash);
             });
+            data.pipe(req);
+        } else {
+            req.send(data)
+                .on('progress', function (event) {
+                    self.uploadProgressHandler(name, event);
+                })
+                .end(function (err, res) {
+                    if (err || res.status > 399) {
+                        deferred.reject(err || new Error(res.status));
+                        return;
+                    }
+                    var response = res.body;
+                    // Get the first one
+                    var hash = Object.keys(response)[0];
+                    self.logger.debug('putFile - result', hash);
+                    deferred.resolve(hash);
+                });
+        }
 
         return deferred.promise.nodeify(callback);
     };
@@ -3552,7 +3576,10 @@ define('blob/BlobClient',[
             req;
         // FIXME: in production mode do not indent the json file.
         this.logger.debug('putMetadata', {metadata: metadataDescriptor});
-        if (typeof Blob !== 'undefined') {
+        if (typeof Blob !== 'undefined' && typeof window !== 'undefined') {
+            // This does not work using the "new" Blob class in nodejs - so make sure (for now at least) that
+            // we running under a brower even though Blob is defined.
+            // https://nodejs.org/api/buffer.html#class-blob
             blob = new Blob([JSON.stringify(metadata.serialize(), null, 4)], {type: 'text/plain'});
             contentLength = blob.size;
         } else {
