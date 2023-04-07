@@ -53,7 +53,7 @@ describe('NodeWorker', function () {
             })
             .then(function () {
                 server = testFixture.WebGME.standaloneServer(gmeConfig);
-                return Q.nfcall(server.start);
+                return server.start();
             })
             .then(function () {
                 var workerConfig = {},

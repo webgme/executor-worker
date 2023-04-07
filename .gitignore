@@ -38,7 +38,7 @@ jspm_packages
 
 # IDE
 .idea
-
+.vscode
 # Worker specifics
 credits.html
 ffmpegsumo.dll
